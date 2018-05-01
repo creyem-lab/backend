@@ -1,0 +1,1 @@
+web: gunicorn --chdir creyem_lab_api index:app
