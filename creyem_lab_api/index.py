@@ -17,10 +17,11 @@ else:
 app.config.from_pyfile(config)
 
 @app.after_request
-def fixorigin(resp):
- if request.method != 'OPTIONS' and 'Origin' in request.headers:
-    resp.headers['Access-Control-Allow-Origin'] = request.headers['Origin']
- return resp
+def after_request(response):
+  response.headers.add('Access-Control-Allow-Origin', '*')
+  response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+  response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+  return response
 
 client = MongoClient(app.config['MONGODB_URL'])
 db = client['creyem_lab_api']

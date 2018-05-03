@@ -8,6 +8,7 @@ flask = "*"
 gunicorn = "*"
 marshmallow = "*"
 pymongo = "*"
+flask-cors = "*"
 
 [dev-packages]
 "autopep8" = "*"
