@@ -5,6 +5,7 @@ from flask import Flask, jsonify, request
 from pymongo import MongoClient
 
 from creyem_lab_api.model.case import Case, CaseSchema
+from creyem_lab_api.model.hotspot import Hotspot, HotspotSchema
 
 
 app = Flask(__name__)
@@ -47,6 +48,26 @@ def get_cases():
 def add_case():
     case = CaseSchema().load(request.get_json())
     db.cases.insert_one(case.data)
+
+    return '', 204
+
+
+@app.route('/hotspots/<case_id>')
+def get_hotspots(case_id):
+    hotspots = db.hotspots.find({"case_id": case_id})
+
+    schema = HotspotSchema(many=True)
+    hotspots_list = schema.dump(
+        hotspots
+    )
+
+    return jsonify(hotspots_list.data)
+
+
+@app.route('/hotspots', methods=['POST'])
+def add_hotspot():
+    hotspot = HotspotSchema().load(request.get_json())
+    db.hotspots.insert_one(hotspot.data)
 
     return '', 204
 
