@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "f91cc06065bc6c1d516ecbd62dc723a27dcdf1cc3dbcb7a8ad73c8f653621c13"
+            "sha256": "281c5241aaafd122bc7de5edb117af6daa3d6dd53263e41cf523d73c8e6534d3"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -657,10 +657,11 @@
         },
         "futures": {
             "hashes": [
-                "sha256:9ec02aa7d674acb8618afb127e27fde7fc68994c0437ad759fa094a574adb265",
-                "sha256:ec0a6cb848cc212002b9828c3e34c675e0c9ff6741dc445cab6fdd4e1085d1f1"
+                "sha256:51ecb45f0add83c806c68e4b06106f90db260585b25ef2abfcda0bd95c0132fd",
+                "sha256:c4884a65654a7c45435063e14ae85280eb1f111d94e542396717ba9828c4337f"
             ],
-            "version": "==3.2.0"
+            "index": "pypi",
+            "version": "==3.1.1"
         },
         "gunicorn": {
             "hashes": [
@@ -689,6 +690,13 @@
                 "sha256:cbb3fcf8d3e33df861709ecaf89d9e6629cff0a217bc2848f1b41cd30d360519"
             ],
             "version": "==0.24"
+        },
+        "jeepney": {
+            "hashes": [
+                "sha256:a6f2aa72e61660248d4d524dfccb6405f17c693b69af5d60dd7f2bab807d907e",
+                "sha256:e7b961fe9dfa1ed4c576d3bb2d70a9276dace0e16ebed9da09e4d288fe1d3b2a"
+            ],
+            "version": "==0.3.1"
         },
         "jinja2": {
             "hashes": [
@@ -821,6 +829,14 @@
                 "sha256:883ac416757eada6d3d07054ec7092ac21c7f35cb1d2cf82faf205637081f468"
             ],
             "version": "==0.8.0"
+        },
+        "secretstorage": {
+            "hashes": [
+                "sha256:1bbf5b85a718854916d1c151fa33e6f667e3c005e033ea46d4123384d233b137",
+                "sha256:819087ca89c0d6c5711692f41fb26f786af9dcc5bb89d567722a66edfbb2a689"
+            ],
+            "markers": "sys_platform == 'linux' and python_version >= '3.5'",
+            "version": "==3.0.1"
         },
         "six": {
             "hashes": [
