@@ -65,7 +65,7 @@ def add_case():
     block_blob_service = BlockBlobService(
         account_name='cryemlab', account_key='yo97cwqrvQLDJuQcY9fwpJqRJAQ9wPl5moUGCGxCesdyyEaByLT6L+0lCYBMZ31AqbtIAekAI429+U6UzEC/Vg==')
 
-    container_name = 'creyemlab'
+    container_name = 'cases'
     block_blob_service.create_container(container_name)
 
     block_blob_service.set_container_acl(
