@@ -1,3 +1,4 @@
+import datetime as dt
 import os
 import logging
 
@@ -17,11 +18,13 @@ else:
 
 app.config.from_pyfile(config)
 
+
 @app.after_request
 def fixorigin(resp):
- if request.method != 'OPTIONS' and 'Origin' in request.headers:
-    resp.headers['Access-Control-Allow-Origin'] = request.headers['Origin']
- return resp
+    if request.method != 'OPTIONS' and 'Origin' in request.headers:
+        resp.headers['Access-Control-Allow-Origin'] = request.headers['Origin']
+    return resp
+
 
 client = MongoClient(app.config['MONGODB_URL'])
 db = client['creyem_lab_api']
@@ -46,7 +49,10 @@ def get_cases():
 
 @app.route('/cases', methods=['POST'])
 def add_case():
-    case = CaseSchema().load(request.get_json())
+    case_data = request.get_json()
+    case_data['created_at'] = dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    case = CaseSchema().load(case_data)
     db.cases.insert_one(case.data)
 
     return '', 204
@@ -66,7 +72,11 @@ def get_hotspots(case_id):
 
 @app.route('/hotspots', methods=['POST'])
 def add_hotspot():
-    hotspot = HotspotSchema().load(request.get_json())
+    hotspot_data = request.get_json()
+    hotspot_data['created_at'] = dt.datetime.now().strftime(
+        "%Y-%m-%d %H:%M:%S")
+
+    hotspot = HotspotSchema().load(hotspot_data)
     db.hotspots.insert_one(hotspot.data)
 
     return '', 204
