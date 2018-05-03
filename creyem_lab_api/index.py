@@ -1,7 +1,10 @@
+import base64
 import datetime as dt
+import re
 import os
 import logging
 
+from azure.storage.blob import BlockBlobService, PublicAccess
 from flask import Flask, jsonify, request
 from pymongo import MongoClient
 
@@ -54,7 +57,23 @@ def add_case():
     case_data['created_at'] = dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     case = CaseSchema().load(case_data)
-    db.cases.insert_one(case.data)
+    case_id = str(db.cases.insert_one(case.data).inserted_id)
+
+    block_blob_service = BlockBlobService(
+        account_name='cryemlab', account_key='yo97cwqrvQLDJuQcY9fwpJqRJAQ9wPl5moUGCGxCesdyyEaByLT6L+0lCYBMZ31AqbtIAekAI429+U6UzEC/Vg==')
+
+    container_name = 'creyemlab'
+    block_blob_service.create_container(container_name)
+
+    block_blob_service.set_container_acl(
+        container_name, public_access=PublicAccess.Container)
+
+    image_data = re.sub('^data:image/.+;base64,', '', case_data['image'])
+
+    byte_data = base64.b64decode(image_data)
+
+    block_blob_service.create_blob_from_bytes(
+        container_name, case_id + '.jpg', byte_data)
 
     return '', 204
 
