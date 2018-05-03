@@ -10,6 +10,7 @@ from pymongo import MongoClient
 
 from creyem_lab_api.model.case import Case, CaseSchema
 from creyem_lab_api.model.hotspot import Hotspot, HotspotSchema
+from creyem_lab_api.model.attachment import Attachment, AttachmentSchema
 
 
 app = Flask(__name__)
@@ -24,10 +25,12 @@ app.config.from_pyfile(config)
 
 @app.after_request
 def after_request(response):
-  response.headers.add('Access-Control-Allow-Origin', '*')
-  response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-  response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
-  return response
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers',
+                         'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods',
+                         'GET,PUT,POST,DELETE,OPTIONS')
+    return response
 
 
 client = MongoClient(app.config['MONGODB_URL'])
@@ -98,6 +101,48 @@ def add_hotspot():
 
     hotspot = HotspotSchema().load(hotspot_data)
     db.hotspots.insert_one(hotspot.data)
+
+    return '', 204
+
+
+@app.route('/attachments/<hotspot_id>')
+def get_attachments(hotspot_id):
+    attachments = db.attachments.find({"hotspot_id": hotspot_id})
+
+    schema = AttachmentSchema(many=True)
+    attachments_list = schema.dump(
+        attachments
+    )
+
+    return jsonify(attachments_list.data)
+
+
+@app.route('/attachments', methods=['POST'])
+def add_attachment():
+    attachment_data = request.get_json()
+    attachment_data['created_at'] = dt.datetime.now().strftime(
+        "%Y-%m-%d %H:%M:%S")
+
+    attachment = AttachmentSchema().load(attachment_data)
+    attachment_id = str(db.attachments.insert_one(
+        attachment.data).inserted_id)
+
+    block_blob_service = BlockBlobService(
+        account_name='cryemlab', account_key='yo97cwqrvQLDJuQcY9fwpJqRJAQ9wPl5moUGCGxCesdyyEaByLT6L+0lCYBMZ31AqbtIAekAI429+U6UzEC/Vg==')
+
+    container_name = 'attachments'
+    block_blob_service.create_container(container_name)
+
+    block_blob_service.set_container_acl(
+        container_name, public_access=PublicAccess.Container)
+
+    image_data = re.sub('^data:image/.+;base64,', '',
+                        attachment_data['image'])
+
+    byte_data = base64.b64decode(image_data)
+
+    block_blob_service.create_blob_from_bytes(
+        container_name, attachment_id + '.jpg', byte_data)
 
     return '', 204
 
