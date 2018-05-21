@@ -34,7 +34,7 @@ def after_request(response):
 
 
 client = MongoClient(app.config['MONGODB_URL'])
-db = client['creyem_lab_api']
+db = client['creyem_lab']
 
 app.logger.info('Environment: %s', app.config['ENV'])
 app.logger.info('MongoDB URL: %s', app.config['MONGODB_URL'])
