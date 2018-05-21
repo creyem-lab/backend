@@ -36,6 +36,9 @@ def after_request(response):
 client = MongoClient(app.config['MONGODB_URL'])
 db = client['creyem_lab_api']
 
+app.logger.info('Environment: %s', app.config['ENV'])
+app.logger.info('MongoDB URL: %s', app.config['MONGODB_URL'])
+
 
 @app.route('/')
 def get_todos():
